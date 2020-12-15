@@ -2,6 +2,11 @@ const express = require("express");
 const routers = express.Router();
 const path = require("path");
 
+const multer = require("multer");
+const upload = multer({ dest: "public" });
+
+const fs = require("fs");
+
 routers.get("/users/:id?", (req, res) => {
   if (!req.params.id) {
     res.send("Paramater belum diset");
@@ -24,6 +29,18 @@ routers.get("/download", (req, res) => {
       "Content-Disposition": 'attachment; filename="photo-profil.jpg"',
     },
   });
+});
+
+// 'file' is key name or name req form
+routers.post("/upload", upload.single("file"), (req, res) => {
+  const file = req.file;
+  if (file) {
+    const target = path.join(__dirname, "public", file.originalname);
+    fs.renameSync(file.path, target);
+    res.send("File berhasil diupload");
+  } else {
+    res.send("File gagal diupload");
+  }
 });
 
 module.exports = routers;
