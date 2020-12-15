@@ -9,4 +9,9 @@ routers.get("/users/:id?", (req, res) => {
   res.send("Detail user " + req.params.id);
 });
 
+routers.post("/login", (req, res) => {
+  const { name, password } = req.body;
+  res.send(name + " login dengan password " + password);
+});
+
 module.exports = routers;
