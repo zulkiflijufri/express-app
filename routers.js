@@ -1,5 +1,6 @@
 const express = require("express");
 const routers = express.Router();
+const path = require("path");
 
 routers.get("/users/:id?", (req, res) => {
   if (!req.params.id) {
@@ -12,6 +13,16 @@ routers.get("/users/:id?", (req, res) => {
 routers.post("/login", (req, res) => {
   const { name, password } = req.body;
   res.send(name + " login dengan password " + password);
+});
+
+routers.get("/download", (req, res) => {
+  const filename = "profil.jpg";
+  res.sendFile(path.join(__dirname, filename), {
+    // change name file
+    headers: {
+      "Content-Disposition": 'attachment; filename="photo-profil.jpg"',
+    },
+  });
 });
 
 module.exports = routers;
