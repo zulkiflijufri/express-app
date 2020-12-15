@@ -2,11 +2,15 @@ const express = require("express");
 const app = express();
 const port = 3000;
 
+const path = require("path");
+
 const routers = require("./routers");
 
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
+// static middleware for directory public
+app.use("/public", express.static(path.join(__dirname, "public")));
 app.use(routers);
 
 // for middleware 404 put after all routes

@@ -17,7 +17,8 @@ routers.post("/login", (req, res) => {
 
 routers.get("/download", (req, res) => {
   const filename = "profil.jpg";
-  res.sendFile(path.join(__dirname, filename), {
+  // res.download(path.join(__dirname, filename), 'photo-profil.png')
+  res.sendFile(path.join(__dirname, "public", filename), {
     // change name file
     headers: {
       "Content-Disposition": 'attachment; filename="photo-profil.jpg"',
