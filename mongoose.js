@@ -9,26 +9,22 @@ mongoose.connect(
 );
 
 // create schema
-const quotesSchema = new mongoose.Schema({
-  word: String,
+const productSchema = new mongoose.Schema({
+  name: String,
+  price: Number,
+  stock: Number,
+  status: { type: Boolean, default: true },
 });
 
 // create Model for schema
-const Quote = mongoose.model("Quote", quotesSchema);
+const Product = mongoose.model("Product", productSchema);
 
 const db = mongoose.connection;
 db.on("error", console.error.bind(console, "connection error: "));
-db.once("open", () => {
-  // create new quotes
-  const quote = new Quote({
-    word: "Introduction mongoose V2",
-  });
-
-  // save quote
-  quote.save((err, quote) => {
-    if (err) return console.error(err);
-    console.log(quote);
-  });
-
-  //console.log("Database connect");
+db.once("open", async () => {
+  // await Quote.find().exec((err, result) => {
+  //   console.log(result);
+  // });
+  const product = await Product.find();
+  console.log(product);
 });
