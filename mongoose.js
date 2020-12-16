@@ -25,6 +25,8 @@ db.once("open", async () => {
   // await Quote.find().exec((err, result) => {
   //   console.log(result);
   // });
-  const product = await Product.find();
+  const product = await Product.findOne({
+    _id: "5fd9c4c23652366bd1599028",
+  });
   console.log(product);
 });
