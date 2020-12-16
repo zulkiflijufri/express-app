@@ -22,11 +22,11 @@ const Product = mongoose.model("Product", productSchema);
 const db = mongoose.connection;
 db.on("error", console.error.bind(console, "connection error: "));
 db.once("open", async () => {
-  // await Quote.find().exec((err, result) => {
-  //   console.log(result);
-  // });
-  const product = await Product.findOne({
-    _id: "5fd9c4c23652366bd1599028",
-  }); //or findById('5fd9c4c23652366bd1599028')
-  console.log(product);
+  const newProduct = await Product.create({
+    name: "Modem versi 2",
+    price: 70000,
+    stock: 1,
+    status: null,
+  });
+  console.log(newProduct);
 });
