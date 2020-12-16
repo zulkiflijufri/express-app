@@ -10,9 +10,9 @@ mongoose.connect(
 
 // create schema
 const productSchema = new mongoose.Schema({
-  name: String,
-  price: Number,
-  stock: Number,
+  name: { type: String, required: [true, "Product name is required"] },
+  price: { type: Number, required: true },
+  stock: { type: Number, required: true },
   status: { type: Boolean, default: true },
 });
 
@@ -22,9 +22,11 @@ const Product = mongoose.model("Product", productSchema);
 const db = mongoose.connection;
 db.on("error", console.error.bind(console, "connection error: "));
 db.once("open", async () => {
-  const deleteProduct = await Product.deleteOne({
-    _id: "5fda0fbe343ae722984847d3",
-  });
-
-  console.log(deleteProduct);
+  try {
+    const create = await Product.create({});
+    console.log(create);
+  } catch (error) {
+    const error_name = error.errors["name"] && error.errors["name"].message;
+    console.error(error_name);
+  }
 });
