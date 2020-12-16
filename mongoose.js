@@ -27,6 +27,6 @@ db.once("open", async () => {
   // });
   const product = await Product.findOne({
     _id: "5fd9c4c23652366bd1599028",
-  });
+  }); //or findById('5fd9c4c23652366bd1599028')
   console.log(product);
 });
