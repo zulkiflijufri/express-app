@@ -22,11 +22,9 @@ const Product = mongoose.model("Product", productSchema);
 const db = mongoose.connection;
 db.on("error", console.error.bind(console, "connection error: "));
 db.once("open", async () => {
-  const newProduct = await Product.create({
-    name: "Modem versi 2",
-    price: 70000,
-    stock: 1,
-    status: null,
-  });
-  console.log(newProduct);
+  const updateProduct = await Product.findById("5fda0fc913b7720c0c8fd909");
+
+  updateProduct.name = "Meja komputer";
+  const update = await updateProduct.save();
+  console.log(update);
 });
