@@ -22,9 +22,9 @@ const Product = mongoose.model("Product", productSchema);
 const db = mongoose.connection;
 db.on("error", console.error.bind(console, "connection error: "));
 db.once("open", async () => {
-  const updateProduct = await Product.findById("5fda0fc913b7720c0c8fd909");
+  const deleteProduct = await Product.deleteOne({
+    _id: "5fda0fbe343ae722984847d3",
+  });
 
-  updateProduct.name = "Meja komputer";
-  const update = await updateProduct.save();
-  console.log(update);
+  console.log(deleteProduct);
 });
