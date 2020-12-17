@@ -1,15 +1,16 @@
-const MongoClient = require("mongodb").MongoClient;
+const mongoose = require("mongoose");
 
-const connection = "mongodb://kifli:12345@localhost:27017?authSource=admin";
+const connection =
+  "mongodb://kifli:12345@localhost:27017/latihan?authSource=admin";
 
-const client = new MongoClient(connection, { useUnifiedTopology: true });
+mongoose.connect(connection, {
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
+  useCreateIndex: true,
+});
 
-(async () => {
-  try {
-    await client.connect();
-  } catch (error) {
-    console.error(error);
-  }
-})();
-
-module.exports = client;
+const db = mongoose.connection;
+db.on("error", console.error.bind(console, "connection error: "));
+db.once("open", () => {
+  console.log("Database connect");
+});

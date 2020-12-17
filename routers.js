@@ -9,7 +9,9 @@ const upload = multer({ dest: "public" });
 
 const fs = require("fs");
 
-const client = require("./connection");
+// const client = require("./connection");
+require("./connection");
+const Products = require("./Product");
 
 routers.get("/users/:id?", (req, res) => {
   if (!req.params.id) {
@@ -49,71 +51,56 @@ routers.post("/upload", upload.single("file"), (req, res) => {
 
 // get products
 routers.get("/products", async (req, res) => {
-  if (client.isConnected()) {
-    const db = client.db("latihan");
-    const products = await db.collection("products").find().toArray();
+  const products = await Products.find();
 
-    if (products.length > 0) {
-      res.send({
-        status: "success",
-        message: "List data products",
-        data: products,
-      });
-    } else {
-      res.send({
-        status: "404",
-        message: "List data products empty",
-      });
-    }
+  if (products.length > 0) {
+    res.send({
+      status: "success",
+      message: "List data products",
+      data: products,
+    });
   } else {
     res.send({
-      status: "error",
-      message: "connect error",
+      status: "404",
+      message: "List data products empty",
     });
   }
 });
 
 // get product by id
 routers.get("/product/:id", async (req, res) => {
-  if (client.isConnected()) {
-    const db = client.db("latihan");
-    const product = await db.collection("products").findOne({
-      _id: ObjectId(req.params.id),
-    });
+  const product = await Products.findById(req.params.id);
 
-    if (product) {
-      res.send({
-        status: "success",
-        message: "Single product",
-        data: product,
-      });
-    } else {
-      res.send({
-        status: "404",
-        message: "Product not found",
-      });
-    }
+  if (product) {
+    res.send({
+      status: "success",
+      message: "Single product",
+      data: product,
+    });
   } else {
-    res.send("connect error");
+    res.send({
+      status: "404",
+      message: "Product not found",
+    });
   }
 });
 
 // create product
-routers.post("/product", async (req, res) => {
-  if (client.isConnected()) {
-    const { name, price, stock, status } = req.body;
-    const db = client.db("latihan");
-    const result = await db.collection("products").insertOne({
+routers.post("/product", multer().none(), async (req, res) => {
+  const { name, price, stock, status } = req.body;
+  try {
+    const result = await Products.create({
       name,
       price,
       stock,
       status,
     });
 
-    if (result.insertedCount == 1) {
+    if (result) {
       res.send({
         status: "success",
         message: "Add product success",
+        data: result,
       });
     } else {
       res.send({
@@ -121,67 +108,76 @@ routers.post("/product", async (req, res) => {
         message: "Add product failed",
       });
     }
-  } else {
-    res.send("connect error");
+  } catch (error) {
+    res.send({
+      status: "error",
+      message: error.message,
+    });
   }
 });
 
 // update product
 routers.put("/product/:id", async (req, res) => {
-  if (client.isConnected()) {
-    const { name, price, stock, status } = req.body;
-    const db = client.db("latihan");
-    const result = await db.collection("products").updateOne(
+  const { name, price, stock, status } = req.body;
+
+  try {
+    const result = await Products.updateOne(
+      { _id: req.params.id },
       {
-        _id: ObjectId(req.params.id),
+        name,
+        price,
+        stock,
+        status,
       },
-      {
-        $set: {
-          name,
-          price,
-          stock,
-          status,
-        },
-      }
+      { runValidators: true }
     );
 
-    if (result.matchedCount == 1) {
+    if (result.ok == 1) {
       res.send({
         status: "success",
         message: "Update product success",
+        data: result,
       });
     } else {
       res.send({
         status: "warning",
         message: "Update product failed",
+        data: result,
       });
     }
-  } else {
-    res.send("connect error");
+  } catch (error) {
+    res.send({
+      error: "error",
+      message: error.message,
+    });
   }
 });
 
 // delete product
 routers.delete("/product/:id", async (req, res) => {
-  if (client.isConnected()) {
-    const db = client.db("latihan");
-    const result = await db.collection("products").deleteOne({
-      _id: ObjectId(req.params.id),
+  try {
+    const result = await Products.deleteOne({
+      _id: req.params.id,
     });
 
     if (result.deletedCount == 1) {
       res.send({
         status: "success",
         message: "Delete product success",
+        data: result,
       });
     } else {
       res.send({
         status: "warning",
         message: "Delete product failed",
+        data: result,
       });
     }
-  } else {
-    res.send("connect error");
+  } catch (error) {
+    res.send({
+      status: "error",
+      message: error.message,
+    });
   }
 });
 
