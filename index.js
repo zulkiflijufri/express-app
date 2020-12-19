@@ -4,7 +4,11 @@ const port = 3000;
 
 const path = require("path");
 
+const cors = require("cors");
+
 const routers = require("./routers");
+
+app.use(cors());
 
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
